@@ -22,7 +22,6 @@ def main_menu():
 def process_age(message, gender):
     user_id = message.chat.id
     try:
-        bot.send_message(user_id, 'Masukkan umur Anda:')
         age = int(message.text)
         bot.register_next_step_handler(message, process_name, gender, age)
     except ValueError:
@@ -74,6 +73,7 @@ def start(message):
     markup.add(item1, item2)
 
     bot.send_message(message.chat.id, 'Hello, {0.first_name}! Selamat datang di bot anon. silahkan pilih jenis kelamin anda.'.format(message.from_user), reply_markup = markup)
+    bot.register_next_step_handler(message, bot_message)
 
 @bot.message_handler(commands = ['menu'])
 def menu(message):
