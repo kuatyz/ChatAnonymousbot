@@ -84,7 +84,7 @@ def start(message):
 
 @bot.message_handler(commands = ['menu'])
 def menu(message):
-    markup = ReplyKeyboardMarkup(resize_keyboard = True)
+    markup = ReplyKeyboardMarkup(resize_keyboard = True, one_time_keyboard=True)
     item1 = KeyboardButton('👥 Cari teman ngobrol')
     markup.add(item1)
 
