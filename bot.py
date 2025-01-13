@@ -37,7 +37,8 @@ def process_name(message, gender, age):
 
     full_name = f"{first_name} {last_name}".strip() or username
 
-    if db.add_user(user_id, full_name, age, gender):
+    try:
+        db.add_user(user_id, full_name, gender, age)
         bot.send_message(
             user_id,
             f"✅ Data Anda telah berhasil ditambahkan!\n\n"
@@ -45,11 +46,11 @@ def process_name(message, gender, age):
             f"👤 **Nama**: {full_name}\n"
             f"👫 **Jenis Kelamin**: {gender}\n"
             f"🎂 **Umur**: {age} Tahun",
-            parse_mode=ParseMode.MARKDOWN,
+            parse_mode="Markdown",
             reply_markup=main_menu()
         )
-    else:
-        bot.send_message(user_id, '❌ Data Anda sudah ada di database.')
+    except Exception as e:
+        bot.send_message(user_id, f'❌ Terjadi kesalahan: {e}')
 
 def stop_dialog():
     markup = ReplyKeyboardMarkup(resize_keyboard = True, one_time_keyboard=True)
