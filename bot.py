@@ -19,48 +19,43 @@ def main_menu():
     markup.add(item1)
     return markup
 
-def process_user_data(message, gender, step='age'):
+def process_age(message, gender):
+    user_id = message.chat.id
+    try:
+        age = int(message.text)
+        bot.send_message(user_id, f"✅ Umur Anda: {age} Tahun.")
+        # Panggil fungsi process_name dengan menambahkan parameter gender dan age
+        bot.register_next_step_handler(message, process_name, gender, age)
+    except ValueError:
+        bot.send_message(user_id, '❌ Mohon masukkan umur yang valid.')
+        bot.register_next_step_handler(message, process_age, gender)
+
+def process_name(message, gender, age):
     user_id = message.chat.id
 
-    if step == 'age':
-        try:
-            # Validasi input umur
-            age = int(message.text)
-            bot.send_message(user_id, f"✅ Umur Anda: {age} Tahun.")
-            
-            # Lanjutkan ke langkah berikutnya (input nama)
-            bot.send_message(user_id, "Silakan masukkan nama lengkap Anda:")
-            bot.register_next_step_handler(message, process_user_data, gender, 'name', age)
-        except ValueError:
-            # Jika input umur tidak valid, minta ulang
-            bot.send_message(user_id, '❌ Mohon masukkan umur yang valid (hanya angka).')
-            bot.register_next_step_handler(message, process_user_data, gender, 'age')
+    # Ambil nama lengkap pengguna
+    first_name = message.from_user.first_name
+    last_name = message.from_user.last_name if message.from_user.last_name else ''
+    username = message.from_user.username if message.from_user.username else ''
 
-    elif step == 'name':
-        # Ambil nama pengguna dari input
-        first_name = message.from_user.first_name
-        last_name = message.from_user.last_name if message.from_user.last_name else ''
-        username = message.from_user.username if message.from_user.username else ''
-        full_name = message.text.strip() or f"{first_name} {last_name}".strip() or username
+    full_name = f"{first_name} {last_name}".strip() or username
 
-        try:
-            # Simpan data ke database
-            db.add_user(user_id, full_name, gender, message.args[0])  # Gunakan umur yang sudah di-pass
-
-            # Konfirmasi data ke pengguna
-            bot.send_message(
-                user_id,
-                f"✅ Data Anda telah berhasil ditambahkan!\n\n"
-                f"🆔 **User ID**: `{user_id}`\n"
-                f"👤 **Nama**: {full_name}\n"
-                f"👫 **Jenis Kelamin**: {gender}\n"
-                f"🎂 **Umur**: {message.args[0]} Tahun",
-                parse_mode="Markdown",
-                reply_markup=main_menu()
-            )
-        except Exception as e:
-            # Tangani error pada penyimpanan database
-            bot.send_message(user_id, f'❌ Terjadi kesalahan: {e}')
+    try:
+        # Menambahkan data pengguna ke database
+        db.add_user(user_id, full_name, gender, age)
+        # Mengirimkan konfirmasi data yang berhasil ditambahkan
+        bot.send_message(
+            user_id,
+            f"✅ Data Anda telah berhasil ditambahkan!\n\n"
+            f"🆔 **User ID**: `{user_id}`\n"
+            f"👤 **Nama**: {full_name}\n"
+            f"👫 **Jenis Kelamin**: {gender}\n"
+            f"🎂 **Umur**: {age} Tahun",
+            parse_mode="Markdown",
+            reply_markup=main_menu()
+        )
+    except Exception as e:
+        bot.send_message(user_id, f'❌ Terjadi kesalahan: {e}')
 
 
 def stop_dialog():
@@ -104,12 +99,12 @@ def bot_message(message):
         if message.text == 'Pria 👨':
             bot.send_message(user_id, '✅ Jenis kelamin Anda: Pria.', reply_markup=main_menu())
             bot.send_message(user_id, 'Masukkan umur Anda:')
-            bot.register_next_step_handler(message, process_user_data, 'male', 'age')
+            bot.register_next_step_handler(message, process_age, 'male')
         
         elif message.text == 'Wanita 👩‍🦱':
             bot.send_message(user_id, '✅ Jenis kelamin Anda: Wanita.', reply_markup=main_menu())
             bot.send_message(user_id, 'Masukkan umur Anda:')
-            bot.register_next_step_handler(message, process_user_data, 'female', 'age')
+            bot.register_next_step_handler(message, process_age, 'female')
         
         elif message.text == '👥 Cari teman ngobrol' or message.text == '✏️ Next dialogue':
             markup = ReplyKeyboardMarkup(resize_keyboard = True)
