@@ -88,23 +88,17 @@ def menu(message):
 @bot.message_handler(content_types = ['text'])
 def bot_message(message):
     user_id = message.chat.id
-    #PILIHAN GENDER
+    # PILIHAN GENDER
     if message.chat.type == 'private':
         if message.text == 'Pria 👨':
-            if db.add_user(user_id, 'male'):
-                bot.send_message(user_id, '✅ Jenis kelamin Anda telah berhasil ditambahkan!', reply_markup = main_menu())
-                bot.send_message(user_id, 'Masukkan umur Anda:')
-                bot.register_next_step_handler(message, process_age, 'male')
-            else:
-                bot.send_message(user_id, '❌ Data Anda sudah berada di database')
+            bot.send_message(user_id, '✅ Jenis kelamin Anda: Pria.', reply_markup=main_menu())
+            bot.send_message(user_id, 'Masukkan umur Anda:')
+            bot.register_next_step_handler(message, process_age, 'male')
         
         elif message.text == 'Wanita 👩‍🦱':
-            if db.add_user(user_id, 'female'):
-                bot.send_message(user_id, '✅ Jenis kelamin Anda telah berhasil ditambahkan!', reply_markup = main_menu())
-                bot.send_message(user_id, 'Masukkan umur Anda:')
-                bot.register_next_step_handler(message, process_age, 'female')
-            else:
-                bot.send_message(user_id, '❌ Data Anda sudah berada di database')
+            bot.send_message(user_id, '✅ Jenis kelamin Anda: Wanita.', reply_markup=main_menu())
+            bot.send_message(user_id, 'Masukkan umur Anda:')
+            bot.register_next_step_handler(message, process_age, 'female')
         
         elif message.text == '👥 Cari teman ngobrol' or message.text == '✏️ Next dialogue':
             markup = ReplyKeyboardMarkup(resize_keyboard = True)

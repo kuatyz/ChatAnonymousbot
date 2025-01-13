@@ -60,25 +60,29 @@ class DatabaseClient:
             print(f"Permissions for {self.db_path} set to 644.")
         except Exception as e:
             print(f"Failed to set permissions: {e}")
-
+    
     def add_user(self, user_id: int, user_name: str, gender: str = None, age: int = None):
         """Menambahkan user ke tabel users."""
+        if not (user_name and gender and age):  # Pastikan semua data lengkap
+            raise ValueError("Data pengguna tidak lengkap. Pastikan semua parameter disediakan.")
+        
         try:
             with self._connection as conn:
                 cursor = conn.cursor()
                 cursor.execute("SELECT user_id FROM users WHERE user_id = ?", (user_id,))
                 existing_user = cursor.fetchone()
-
+                
                 if not existing_user:
                     cursor.execute(
                         "INSERT INTO users (user_id, user_name, gender, age) VALUES (?, ?, ?, ?)",
                         (user_id, user_name, gender, age),
-                    )
+                        )
                     print(f"User {user_name} dengan ID {user_id} berhasil ditambahkan.")
                 else:
                     print(f"User dengan ID {user_id} sudah ada.")
         except Exception as e:
             print(f"Gagal menambahkan user: {e}")
+
 
     def delete_user(self, user_id: int):
         """Menghapus user dari tabel users."""
