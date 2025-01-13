@@ -5,9 +5,8 @@ import logging
 load_dotenv()
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "7358616747:AAERaTh3m5gkLCGQFguBy3fIprywyJcYdak")
-ADMINS = os.environ.get("ADMIN", "")
+ADMINS = os.environ.get("ADMIN", "1475365115")
 DB_NAME = os.environ.get("DATABASE_NAME", "chatbot")
-DB_URL = os.environ.ger("DATABASE_URL", "")
 
 logging.basicConfig(
     level=logging.INFO,
