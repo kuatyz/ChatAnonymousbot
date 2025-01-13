@@ -23,6 +23,7 @@ def process_age(message, gender):
     user_id = message.chat.id
     try:
         age = int(message.text)
+        bot.send_message(user_id, f"✅ Umur Anda: {age} Tahun.")
         bot.register_next_step_handler(message, process_name, gender, age)
     except ValueError:
         bot.send_message(user_id, '❌ Mohon masukkan umur yang valid.')
