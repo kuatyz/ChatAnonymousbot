@@ -3,10 +3,8 @@ import os
 import stat
 
 class DatabaseClient:
-    _connection: sqlite3.Connection
-
-    def __init__(self, connection: sqlite3.Connection, db_path: str) -> None:
-        self._connection = connection
+    def __init__(self, db_path: str) -> None:
+        self._connection = sqlite3.connect(self.db_path, check_same_thread=False)
         self.db_path = db_path
         self._initialize_database()
         self._set_permissions()
