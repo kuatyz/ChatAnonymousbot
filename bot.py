@@ -16,32 +16,40 @@ async def start(client, message):
     user = db.get_user(message.from_user.id)
     
     if user is None:
-        inline_markup = InlineKeyboardMarkup(
+        # Menggunakan KeyboardButton untuk memilih gender
+        markup = ReplyKeyboardMarkup(
             [
-                [InlineKeyboardButton("Я Парень 👨", callback_data="male"),
-                 InlineKeyboardButton("Я Девушка 👩‍🦱", callback_data="female")]
-            ]
+                [KeyboardButton("Я Парень 👨"), KeyboardButton("Я Девушка 👩‍🦱")]
+            ],
+            resize_keyboard=True
         )
-        await message.reply(f"Hello, {message.from_user.first_name}! Selamat Datang di bot Anon!, Pilih gender kamu", reply_markup=inline_markup)
+        await message.reply(f"Hello, {message.from_user.first_name}! Selamat Datang di bot Anon!, Pilih gender kamu", reply_markup=markup)
     else:
         await message.reply("Informasi kamu sudah berada di database, lanjutkan pencarian /search")
 
-@bot.on_callback_query()
-async def handle_callback(client : Client, callback_query):
-    user_id = callback_query.from_user.id
-    gender_preference = callback_query.data
-    name = callback_query.from_user.first_name
-    gender = gender_preference
+@bot.on_message(filters.text)
+async def handle_gender_choice(client, message):
+    user_id = message.from_user.id
+    gender = message.text.strip()
+    name = message.from_user.first_name
 
-    age_message = await client.message_reply(user_id, "Masukkan usia Anda (dalam tahun):")
+    if gender in ["Я Парень 👨", "Я Девушка 👩‍🦱"]:
+        await message.reply("Masukkan usia Anda (dalam tahun):")
+        
+        try:
+            # Menunggu input usia
+            age_response = await client.listen(message.chat.id)
+            age = int(age_response.text)
 
-    try:
-        age = int(age_message.text)
-        if age < 0 or age > 120:
-            await age_message.reply("Harap masukkan usia yang valid.")
-        else:
-            db.add_user(user_id, name, gender, age)
-            info_message = f"Informasi berhasil disimpan:\nNama: {name}\nUser ID: {user_id}\nGender: {gender}\nUmur: {age}"
-            await age_message.reply(info_message)
-    except ValueError:
-        await age_message.reply("Harap masukkan angka usia yang valid.")
+            if age < 0 or age > 120:
+                await age_response.reply("Harap masukkan usia yang valid.")
+            else:
+                # Menyimpan informasi pengguna
+                db.add_user(user_id, name, gender, age)
+                info_message = f"Informasi berhasil disimpan:\nNama: {name}\nUser ID: {user_id}\nGender: {gender}\nUmur: {age}"
+                await age_response.reply(info_message)
+        except ValueError:
+            await age_response.reply("Harap masukkan angka usia yang valid.")
+    else:
+        # Jika pengguna mengirimkan pesan selain pilihan gender yang sah
+        await message.reply("Pilih salah satu gender yang tersedia: Я Парень 👨 atau Я Девушка 👩‍🦱")

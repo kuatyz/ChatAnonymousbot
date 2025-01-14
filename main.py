@@ -1,5 +1,7 @@
-from config import logger
+from config import LOGGER
 from bot import bot
+
+logger = LOGGER("Bot")
 
 def log_bot_info():
     try:

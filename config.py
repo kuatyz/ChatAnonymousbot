@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 import os
-import logging
+from logging import basicConfig, INFO, WARNING, getLogger, Logger
 
 load_dotenv()
 
@@ -10,9 +10,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 ADMINS = os.environ.get("ADMIN", "")
 DB_NAME = os.environ.get("DATABASE_NAME", "")
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d"
-)
-logger = logging.getLogger("Bot")
+basicConfig(level=INFO, format="[%(levelname)s] - %(message)s")
+getLogger("pyrogram").setLevel(WARNING)
+def LOGGER(name: str) -> Logger:
+    return getLogger(name)
