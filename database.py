@@ -93,17 +93,24 @@ class DatabaseClient:
                 print(f"User dengan ID {user_id} berhasil dihapus.")
         except Exception as e:
             print(f"Gagal menghapus user: {e}")
-
-    def get_all_users(self):
-        """Mengambil semua user dari tabel users."""
+            
+    def get_all_users(self, gender=None):
+        """Mengambil semua user dari tabel users, dengan opsi filter gender."""
         try:
             with self._connection as conn:
                 cursor = conn.cursor()
-                cursor.execute("SELECT user_id, user_name, gender, age FROM users")
+                if gender:
+                    cursor.execute(
+                        "SELECT user_id, user_name, gender, age FROM users WHERE gender = ?", 
+                        (gender,)
+                )
+                else:
+                    cursor.execute("SELECT user_id, user_name, gender, age FROM users")
                 return cursor.fetchall()
         except Exception as e:
             print(f"Gagal mengambil daftar user: {e}")
             return []
+
     
     def get_chat(self, chat_id: int):
         """Mengambil data chat berdasarkan chat_id."""

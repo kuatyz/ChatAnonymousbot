@@ -123,7 +123,7 @@ def bot_message(message):
         
         elif message.text == '🔎 Boy':
             user_info = db.get_all_users('male')
-            chat_two = user_info[0]
+            chat_two = user_info[0] if user_info else None
             if db.add_chat(message.chat.id, chat_two) == False:
                 db.add_to_queue(message.chat.id, db.get_all_users(message.chat.id))
                 bot.send_message(message.chat.id, '👻 Cari teman bicara', reply_markup = stop_search())
@@ -136,7 +136,7 @@ def bot_message(message):
         
         elif message.text == '🔎 Girl':
             user_info = db.get_all_users('female')
-            chat_two = user_info[0]
+            chat_two = user_info[0] if user_info else None
             if db.add_chat(message.chat.id, chat_two) == False:
                 db.add_to_queue(message.chat.id, db.get_all_users(message.chat.id))
                 bot.send_message(message.chat.id, '👻 Cari teman bicara', reply_markup = stop_search())
