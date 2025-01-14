@@ -33,7 +33,7 @@ async def handle_callback(client : Client, callback_query):
     name = callback_query.from_user.first_name
     gender = gender_preference
 
-    age_message = await client.ask(user_id, "Masukkan usia Anda (dalam tahun):")
+    age_message = await client.message_reply(user_id, "Masukkan usia Anda (dalam tahun):")
 
     try:
         age = int(age_message.text)
