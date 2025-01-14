@@ -6,7 +6,7 @@ load_dotenv()
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 ADMINS = os.environ.get("ADMIN", "")
-DB_NAME = os.environ.get("DATABASE_NAME", "")
+DB_URL = os.environ.get("DATABASE_URL", "")
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] - %(message)s")
 logging.getLogger("telebot").setLevel(logging.WARNING)
