@@ -27,7 +27,7 @@ async def start(client, message):
         await message.reply("Informasi kamu sudah berada di database, lanjutkan pencarian /search")
 
 @bot.on_callback_query()
-async def handle_callback(client, callback_query):
+async def handle_callback(client : Client, callback_query):
     user_id = callback_query.from_user.id
     gender_preference = callback_query.data
     name = callback_query.from_user.first_name
