@@ -13,7 +13,7 @@ def send_welcome(message):
     if user_data:
         bot.send_message(
             message.chat.id,
-            f"Selamat datang kembali, {user_data['name']}!\nSilahkan ketik /search untuk mecari pasangan")
+            f"Selamat datang kembali, {user_data[2]}!\nSilahkan ketik /search untuk mecari pasangan")
     else:
         markup = ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
         btn_pria = KeyboardButton("Pria")

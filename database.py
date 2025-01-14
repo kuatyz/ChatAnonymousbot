@@ -58,13 +58,21 @@ class DatabaseClient:
                 VALUES (?, ?, ?, ?, ?)
                 """, (user_id, chat_id, name, gender, age))
             conn.commit()
-
+            
     def get_user(self, user_id: int):
         with self._connection as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
             user = cursor.fetchone()
-            return user
+            if user:
+                return {
+                    "user_id": user[0],
+                    "chat_id": user[1],
+                    "name": user[2],
+                    "gender": user[3],
+                    "age": user[4]
+                    }
+            return None
     
     def get_all_gender(self, gender: str):
         """Mengambil semua pengguna dengan gender tertentu."""
