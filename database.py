@@ -104,6 +104,42 @@ class DatabaseClient:
         except Exception as e:
             print(f"Gagal mengambil daftar user: {e}")
             return []
+    
+    def get_chat(self, chat_id: int):
+        """Mengambil data chat berdasarkan chat_id."""
+        try:
+            with self._connection as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM chats WHERE id = ?", (chat_id,))
+                chat = cursor.fetchone()
+                
+                if chat:
+                    print(f"Chat ditemukan: {chat}")
+                    return chat
+                else:
+                    print(f"Chat dengan ID {chat_id} tidak ditemukan.")
+                    return None
+        except Exception as e:
+            print(f"Gagal mengambil chat: {e}")
+            return None
+        
+    def get_active_chat(self):
+        """Mengambil semua chat aktif dari tabel chats."""
+        try:
+            with self._connection as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM chats")
+                active_chats = cursor.fetchall()
+                
+                if active_chats:
+                    print(f"Chat aktif ditemukan: {active_chats}")
+                    return active_chats
+                else:
+                    print("Tidak ada chat aktif.")
+                    return []
+        except Exception as e:
+            print(f"Gagal mengambil chat aktif: {e}")
+            return []
 
     def add_chat(self, chat_one: int, chat_two: int):
         """Menambahkan chat ke tabel chats."""
