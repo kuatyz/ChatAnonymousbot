@@ -29,13 +29,9 @@ def handle_gender(message):
     else:
         bot.send_message(message.chat.id, "Tolong pilih 'Pria' atau 'Wanita'.")
 
-@bot.message_handler(func=lambda message: message.text == "Kembali")
-def go_back_to_gender(message):
-    bot.send_message(message.chat.id, "Tolong pilih 'Pria' atau 'Wanita'.")
-    send_welcome(message)
-
 @bot.message_handler(commands=['search'])
 def menu(message):
+    bot.send_message(message.chat.id, "Pilih jenis pasangan yang ingin Anda cari:", reply_markup=None)
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     btn_boy = KeyboardButton("Boy")
     btn_girls = KeyboardButton("Girls")
