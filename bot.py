@@ -33,7 +33,6 @@ async def handle_callback(client, callback_query):
     name = callback_query.from_user.first_name
     gender = gender_preference
 
-    db.add_queue(user_id, gender_preference)
     age_message = await client.ask(user_id, "Masukkan usia Anda (dalam tahun):")
 
     try:
