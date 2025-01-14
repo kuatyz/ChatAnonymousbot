@@ -11,7 +11,7 @@ def log_bot_info():
         logger.info(
             f"Bot: {bot_name}\n"
             f"Username: @{bot_username}\n"
-            f"Telah Aktif"
+            f"🔥 Bot Telah Aktif 🔥"
         )
     except Exception as e:
         logger.warning(f"Gagal mengambil informasi bot: {e}")

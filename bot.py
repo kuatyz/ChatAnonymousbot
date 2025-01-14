@@ -24,7 +24,10 @@ def handle_gender(message):
         send_welcome(message)
 
 def ask_age(message, gender):
-    bot.send_message(message.chat.id, "Berapa usia Anda?")
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    back_button = KeyboardButton("Kembali")
+    markup.add(back_button)
+    bot.send_message(message.chat.id, "Berapa usia Anda?", reply_markup=markup)
     bot.register_next_step_handler(message, save_user_data, gender)
 
 def save_user_data(message, gender):

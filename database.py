@@ -136,3 +136,4 @@ class DatabaseClient:
 
 db_path = os.path.abspath(f"./{DB_NAME}.db")
 db = DatabaseClient(db_path)
+print(f"DATABASE BERHASIL TERKONEKSI DENGAN {db_path}")
