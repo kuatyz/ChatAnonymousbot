@@ -13,13 +13,13 @@ def log_bot_info():
         )
     except Exception as e:
         logger.warning(f"Gagal mengambil informasi bot: {e}")
-    
+
 def main():
     log_bot_info()
     try:
-        bot.polling(none_stop=True)
+        bot.run()
     except Exception as e:
-        logger.warning(f"Gagal memulai polling: {e}")
-                       
+        logger.warning(f"Gagal memulai bot: {e}")
+
 if __name__ == "__main__":
     main()
