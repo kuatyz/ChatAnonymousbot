@@ -20,10 +20,8 @@ class DatabaseClient:
             print(f"Failed to set permissions: {e}")
 
     def _initialize_database(self):
-        """Inisialisasi tabel users, queue, dan chats jika tabel belum ada."""
         with self._connection as conn:
             cursor = conn.cursor()
-            # Membuat tabel users jika belum ada
             cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER PRIMARY KEY,
@@ -33,7 +31,6 @@ class DatabaseClient:
                 age INTEGER NOT NULL
             )
             """)
-            # Membuat tabel queue jika belum ada
             cursor.execute("""
             CREATE TABLE IF NOT EXISTS queue (
                 user_id INTEGER PRIMARY KEY,
@@ -42,10 +39,9 @@ class DatabaseClient:
                 FOREIGN KEY (user_id) REFERENCES users (user_id)
             )
             """)
-            # Membuat tabel chats jika belum ada
             cursor.execute("""
             CREATE TABLE IF NOT EXISTS chats (
-                chat_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                chat_id INTEGER PRIMARY KEY,
                 user_one INTEGER NOT NULL,
                 user_two INTEGER NOT NULL,
                 FOREIGN KEY (user_one) REFERENCES users (user_id),
@@ -53,84 +49,89 @@ class DatabaseClient:
             )
             """)
             conn.commit()
-
-def add_user(self, user_id: int, name: str, gender: str, age: int, chat_id: int) -> None:
-    """Menambahkan pengguna baru ke dalam tabel users atau memperbarui data pengguna yang sudah ada."""
-    with self._connection as conn:
-        cursor = conn.cursor()
-        cursor.execute("""
-        INSERT OR REPLACE INTO users (user_id, chat_id, name, gender, age)
-        VALUES (?, ?, ?, ?, ?)
-        """, (user_id, chat_id, name, gender, age))
-        conn.commit()
-
-def get_all_user(self, gender: str = None):
-    """Mengambil semua pengguna dengan gender tertentu, atau semua pengguna jika gender None."""
-    with self._connection as conn:
-        cursor = conn.cursor()
-        if gender:
+    
+    def set_gender(self, user_id: int, name: str, gender: str, age: int, chat_id: int) -> None:
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT OR REPLACE INTO users (user_id, chat_id, name, gender, age)
+                VALUES (?, ?, ?, ?, ?)
+                """, (user_id, chat_id, name, gender, age))
+            conn.commit()
+    
+    def get_all_gender(self, gender: str):
+        """Mengambil semua pengguna dengan gender tertentu."""
+        with self._connection as conn:
+            cursor = conn.cursor()
             cursor.execute("SELECT * FROM users WHERE gender = ?", (gender,))
-        else:
-            cursor.execute("SELECT * FROM users")
-        users = cursor.fetchall()
-        return users
-
-def get_user(self, user_id: int):
-    with self._connection as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
-        user = cursor.fetchone()
-        return user
-
-def add_queue(self, user_id: int, gender_preference: str, chat_id: int) -> None:
-    with self._connection as conn:
-        cursor = conn.cursor()
-        cursor.execute("""
-        INSERT OR REPLACE INTO queue (user_id, chat_id, gender_preference)
-        VALUES (?, ?, ?)
-        """, (user_id, chat_id, gender_preference))
-        conn.commit()
-
-def del_queue(self, user_id: int) -> None:
-    with self._connection as conn:
-        cursor = conn.cursor()
-        cursor.execute("""
-        DELETE FROM queue WHERE user_id = ?
-        """, (user_id,))
-        conn.commit()
-
-def get_queue(self) -> list:
-    with self._connection as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT user_id, gender_preference, chat_id FROM queue")
-        queue = cursor.fetchall()
+            users = cursor.fetchall()
+            return users
+        
+    def get_gender(self, user_id: int):
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT gender FROM users WHERE user_id = ?", (user_id,))
+            gender = cursor.fetchone()
+            return gender[0] if gender else None
+    
+    def add_queue(self, user_id: int, gender_preference: str, chat_id: int) -> None:
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT OR REPLACE INTO queue (user_id, chat_id, gender_preference)
+                VALUES (?, ?, ?)
+                """, (user_id, chat_id, gender_preference))
+            conn.commit()
+    
+    def del_queue(self, user_id: int) -> None:
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                DELETE FROM queue WHERE user_id = ?
+                """, (user_id,))
+            conn.commit()
+    
+    def get_queue(self) -> list:
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT user_id, gender_preference, chat_id FROM queue")
+            queue = cursor.fetchall()
         return queue
-
-def match_users(self, user_id: int, gender_preference: str) -> tuple:
-    queue = self.get_queue()
-    for user in queue:
-        if user[1] == gender_preference:
-            self.remove_from_queue(user[0])
-            return user[0]
-    return None
-
-def add_chat(self, user_one: int, user_two: int) -> None:
-    with self._connection as conn:
-        cursor = conn.cursor()
-        cursor.execute("""
-        INSERT INTO chats (user_one, user_two)
-        VALUES (?, ?)
-        """, (user_one, user_two))
-        conn.commit()
-
-def get_active_chat(self, user_id: int):
-    with self._connection as conn:
-        cursor = conn.cursor()
-        cursor.execute("""
-        SELECT * FROM chats WHERE user_one = ? OR user_two = ?
-        """, (user_id, user_id))
-        chat = cursor.fetchall()
-        return chat if chat else None
+    
+    def match_users(self, user_id: int, gender_preference: str) -> tuple:
+        queue = self.get_queue()
+        for user in queue:
+            if user[1] == gender_preference:
+                self.remove_from_queue(user[0])
+                return user[0]
+        return None
+    
+    def add_chat(self, chat_id, user_one: int, user_two: int) -> None:
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO chats (chat_id, user_one, user_two)
+                VALUES (?, ?, ?)
+                """, (chat_id, user_one, user_two))
+            conn.commit()
+    
+    def get_active_chat(self, user_id: int):
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT chat_id, user_one, user_two FROM chats WHERE user_one = ? OR user_two = ?
+                """, (user_id, user_id))
+            chat = cursor.fetchall()
+            return chat if chat else None
+        
+    def get_chat(self, chat_id: int):
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT chat_id, user_one, user_two FROM chats WHERE chat_id = ?
+            """, (chat_id,))
+            chat = cursor.fetchone()
+            return chat if chat else None
 
 
 db_path = os.path.abspath(f"./{DB_NAME}.db")
