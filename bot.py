@@ -29,7 +29,6 @@ def handle_gender(message):
 
 @bot.message_handler(commands=['search'])
 def menu(message):
-    bot.send_message(message.chat.id, "Pilih jenis pasangan yang ingin Anda cari:", reply_markup=None)
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     btn_boy = KeyboardButton("Boy")
     btn_girls = KeyboardButton("Girls")
