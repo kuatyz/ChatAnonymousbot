@@ -7,11 +7,19 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    markup = ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-    btn_pria = KeyboardButton("Pria")
-    btn_wanita = KeyboardButton("Wanita")
-    markup.add(btn_pria, btn_wanita)
-    bot.send_message(message.chat.id, "Pilih jenis kelamin Anda:", reply_markup=markup)
+    user_id = message.from_user.id
+
+    user_data = db.get_user(user_id)
+    if user_data:
+        bot.send_message(
+            message.chat.id,
+            f"Selamat datang kembali, {user_data['name']}!\nSilahkan ketik /search untuk mecari pasangan")
+    else:
+        markup = ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+        btn_pria = KeyboardButton("Pria")
+        btn_wanita = KeyboardButton("Wanita")
+        markup.add(btn_pria, btn_wanita)
+        bot.send_message(message.chat.id, "Pilih jenis kelamin Anda:", reply_markup=markup)
 
 @bot.message_handler(content_types=['text'])
 def handle_gender(message):
