@@ -26,8 +26,6 @@ def handle_gender(message):
     if gender == 'Pria' or gender == 'Wanita':
         bot.send_message(message.chat.id, f"Anda memilih {gender}.")
         bot.register_next_step_handler(message, ask_age, gender)
-    else:
-        bot.send_message(message.chat.id, "Tolong pilih 'Pria' atau 'Wanita'.")
 
 @bot.message_handler(commands=['search'])
 def menu(message):
