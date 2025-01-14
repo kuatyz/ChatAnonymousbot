@@ -50,6 +50,37 @@ class DatabaseClient:
             """)
             conn.commit()
 
+    def set_gender(self, user_id, chat_id, name, gender, age):
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT user_id FROM users WHERE user_id = ?", (user_id,))
+            result = cursor.fetchone()
+
+            if result:
+                cursor.execute(
+                    "UPDATE users SET gender = ? WHERE user_id = ?",
+                    (gender, user_id)
+                )
+            else:
+                cursor.execute(
+                    "INSERT INTO users (user_id, chat_id, name, gender, age) VALUES (?, ?, ?, ?, ?)",
+                    (user_id, chat_id, name, gender, age)
+                )
+            conn.commit()
+
+    def get_all_gender(self):
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT user_id, name, gender FROM users")
+            return cursor.fetchall()
+
+    def get_gender_by_user_id(self, user_id):
+        with self._connection as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT gender FROM users WHERE user_id = ?", (user_id,))
+            result = cursor.fetchone()
+            return result[0] if result else None
+
 db_path = os.path.abspath(f"./{DB_NAME}.db")
 db = DatabaseClient(db_path)
 print(f"DATABASE BERHASIL TERKONEKSI DENGAN {db_path}")

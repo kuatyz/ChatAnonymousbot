@@ -19,7 +19,7 @@ def log_bot_info():
 def main():
     log_bot_info()
     try:
-        bot.run()
+        bot.polling()
     except Exception as e:
         logger.warning(f"Gagal memulai bot: {e}")
 
