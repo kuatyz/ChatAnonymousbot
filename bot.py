@@ -21,7 +21,12 @@ def handle_gender(message):
         bot.register_next_step_handler(message, ask_age, gender)
     else:
         bot.send_message(message.chat.id, "Tolong pilih 'Pria' atau 'Wanita'.")
-        send_welcome(message)
+        go_back_to_gender(message)
+
+@bot.message_handler(func=lambda message: message.text == "Kembali")
+def go_back_to_gender(message):
+    bot.send_message(message.chat.id, "Tolong pilih 'Pria' atau 'Wanita'.")
+    send_welcome(message)
 
 def ask_age(message, gender):
     markup = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
